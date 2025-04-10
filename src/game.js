@@ -120,17 +120,17 @@ class Game {
     window.addEventListener("resize", this.resize.bind(this));
     window.addEventListener("keydown", this.keyControll.bind(this));
     if (DEBUG) {
-      window.addEventListener("mousedown", this.canvasMouseDown.bind(this));
-      window.addEventListener("mouseup", this.canvasMouseUp.bind(this));
-      window.addEventListener("mousemove", (e) => {
+      this.canvas.addEventListener("mousedown", this.canvasMouseDown.bind(this));
+      this.canvas.addEventListener("mouseup", this.canvasMouseUp.bind(this));
+      this.canvas.addEventListener("mousemove", (e) => {
         if (this.click) {
           this.makeBlock(e);
         } else if (this.rightClick) {
           this.removeBlock(e);
         }
       });
+      this.canvas.addEventListener("contextmenu", (e) => e.preventDefault());
     }
-    window.addEventListener("contextmenu", (e) => e.preventDefault());
     this.resize();
     this.animation.start();
   }
