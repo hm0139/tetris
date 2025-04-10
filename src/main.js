@@ -1,4 +1,5 @@
 import { GAME_STATUS_PLAYING, GAME_STATUS_WAIT } from "./constval.js";
+import Dialog from "./dialog.js";
 import Game from "./game.js";
 import { switchFormDisabled } from "./util.js";
 
@@ -14,6 +15,7 @@ function main() {
     switchFormDisabled([
       { formElement: gameStartBtn, disabled: true, className: "cursor" },
       { formElement: gamePauseBtn, disabled: false, className: "cursor" },
+      { formElement: gameCancelBtn, disabled: false, className: "cursor" },
     ]);
     game.start();
   });
@@ -22,6 +24,7 @@ function main() {
     switchFormDisabled([
       { formElement: gameStartBtn, disabled: false, className: "cursor" },
       { formElement: continueBtn, disabled: true, className: "cursor" },
+      { formElement: gameCancelBtn, disabled: true, className: "cursor" },
     ]);
     game.gameStatus = GAME_STATUS_WAIT;
   });
@@ -36,14 +39,43 @@ function main() {
     }
   });
 
+  const dialog = new Dialog("dialog-box", "dialog-active", "確認", "ゲームを中断しますか？");
+  dialog.addButton([
+    {
+      value: "はい",
+      func: () => {
+        game.gameStatus = GAME_STATUS_WAIT;
+        switchFormDisabled([
+          { formElement: gameStartBtn, disabled: false, className: "cursor" },
+          { formElement: gameCancelBtn, disabled: true, className: "cursor" },
+          { formElement: gamePauseBtn, disabled: true, className: "cursor" },
+        ]);
+        gamePauseBtn.value = "一時停止";
+        dialog.setDialogVisibility(false);
+      },
+      className: "cursor ui-btn",
+    },
+    {
+      value: "いいえ",
+      func: () => {
+        game.resume();
+        gamePauseBtn.value = "一時停止";
+        dialog.setDialogVisibility(false);
+      },
+      className: "cursor ui-btn",
+    },
+  ]);
+
   gameCancelBtn.addEventListener("click", () => {
-    //未実装
+    game.pause();
+    dialog.setDialogVisibility(true);
   });
 
   game.finishFunc = () => {
     switchFormDisabled([
       { formElement: continueBtn, disabled: false, className: "cursor" },
       { formElement: gamePauseBtn, disabled: true, className: "cursor" },
+      { formElement: gameCancelBtn, disabled: true, className: "cursor" },
     ]);
   };
 
