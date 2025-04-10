@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>テトリス</title>
+    <link rel="stylesheet" href="style.css" />
+    <script type="module" src="src/main.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <canvas id="main" class="game-screen"></canvas>
+      <div class="side-menu">
+        <div class="ui-item center">
+          <input type="button" value="ゲーム開始" id="game-start-btn" class="cursor ui-btn" />
+        </div>
+        <div class="ui-item center">
+          <input type="button" value="ゲームをやめる" id="game-cancel-btn" class="ui-btn" disabled />
+        </div>
+        <div class="ui-item space-around">
+          <input type="button" value="コンテニュー" id="continue-btn" class="ui-btn" disabled />
+          <input type="button" value="一時停止" id="game-pause" class="ui-btn" disabled />
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

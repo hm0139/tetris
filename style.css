@@ -1,0 +1,50 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+}
+
+.container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+}
+
+.game-screen {
+  width: 80%;
+  height: 100%;
+}
+
+.side-menu {
+  width: 20%;
+  padding: 10px;
+  border-left: 1px solid #808080;
+}
+
+.ui-item {
+  margin: 20px 0;
+  display: flex;
+}
+
+.center {
+  justify-content: center;
+}
+
+.space-between {
+  justify-content: space-between;
+}
+
+.space-around {
+  justify-content: space-around;
+}
+
+.cursor {
+  cursor: pointer;
+}
+
+.ui-btn {
+  padding: 5px;
+}
