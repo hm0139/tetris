@@ -60,10 +60,14 @@ export function switchFormDisabled(formDisabledInfos) {
     const { formElement, disabled, className } = formInfo;
     if (disabled) {
       formElement.disabled = true;
-      formElement.classList.remove(className);
+      if (className != undefined && className != "") {
+        formElement.classList.remove(className);
+      }
     } else {
       formElement.disabled = false;
-      formElement.classList.add(className);
+      if (className != undefined && className != "") {
+        formElement.classList.add(className);
+      }
     }
   }
 }
