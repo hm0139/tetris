@@ -1,5 +1,5 @@
 import { GAME_STATUS_PLAYING, GAME_STATUS_WAIT } from "./constval.js";
-import Dialog from "./dialog.js";
+import Modal from "./modal.js";
 import Game from "./game.js";
 import { switchFormDisabled } from "./util.js";
 
@@ -13,18 +13,18 @@ function main() {
 
   gameStartBtn.addEventListener("click", () => {
     switchFormDisabled([
-      { formElement: gameStartBtn, disabled: true, className: "cursor" },
-      { formElement: gamePauseBtn, disabled: false, className: "cursor" },
-      { formElement: gameCancelBtn, disabled: false, className: "cursor" },
+      { formElement: gameStartBtn, disabled: true },
+      { formElement: gamePauseBtn, disabled: false },
+      { formElement: gameCancelBtn, disabled: false },
     ]);
     game.start();
   });
 
   continueBtn.addEventListener("click", () => {
     switchFormDisabled([
-      { formElement: gameStartBtn, disabled: false, className: "cursor" },
-      { formElement: continueBtn, disabled: true, className: "cursor" },
-      { formElement: gameCancelBtn, disabled: true, className: "cursor" },
+      { formElement: gameStartBtn, disabled: false },
+      { formElement: continueBtn, disabled: true },
+      { formElement: gameCancelBtn, disabled: true },
     ]);
     game.gameStatus = GAME_STATUS_WAIT;
   });
@@ -39,43 +39,43 @@ function main() {
     }
   });
 
-  const dialog = new Dialog("dialog-box", "dialog-active", "確認", "ゲームを中断しますか？");
-  dialog.addButton([
+  const modal = new Modal("modal-box");
+  modal.setHeaderText("確認");
+  modal.setContentText("ゲームを中断しますか？");
+  modal.addButtons([
     {
       value: "はい",
       func: () => {
-        game.gameStatus = GAME_STATUS_WAIT;
         switchFormDisabled([
-          { formElement: gameStartBtn, disabled: false, className: "cursor" },
-          { formElement: gameCancelBtn, disabled: true, className: "cursor" },
-          { formElement: gamePauseBtn, disabled: true, className: "cursor" },
+          { formElement: gameStartBtn, disabled: false },
+          { formElement: gameCancelBtn, disabled: true },
+          { formElement: gamePauseBtn, disabled: true },
         ]);
-        gamePauseBtn.value = "一時停止";
-        dialog.setDialogVisibility(false);
+        game.gameStatus = GAME_STATUS_WAIT;
+        modal.hide();
       },
-      className: "cursor ui-btn",
+      className: "btn btn-primary",
     },
     {
       value: "いいえ",
       func: () => {
         game.resume();
-        gamePauseBtn.value = "一時停止";
-        dialog.setDialogVisibility(false);
+        modal.hide();
       },
-      className: "cursor ui-btn",
+      className: "btn btn-secondary",
     },
   ]);
 
   gameCancelBtn.addEventListener("click", () => {
+    modal.show();
     game.pause();
-    dialog.setDialogVisibility(true);
   });
 
   game.finishFunc = () => {
     switchFormDisabled([
-      { formElement: continueBtn, disabled: false, className: "cursor" },
-      { formElement: gamePauseBtn, disabled: true, className: "cursor" },
-      { formElement: gameCancelBtn, disabled: true, className: "cursor" },
+      { formElement: continueBtn, disabled: false },
+      { formElement: gamePauseBtn, disabled: true },
+      { formElement: gameCancelBtn, disabled: true },
     ]);
   };
 
