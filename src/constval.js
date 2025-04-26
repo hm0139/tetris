@@ -11,7 +11,7 @@ export const BLOCK_SIZE = 25; //ブロック一つの大きさ(px)
 
 //フィールドの位置(px)
 export const FIELD_POSITION_X = 100;
-export const FIELD_POSITION_Y = 100;
+export const FIELD_POSITION_Y = 40;
 
 //操作中のテトリミノのを保持する配列の大きさ(縦X横)
 export const TETRIMINO_FIELD = 4;
