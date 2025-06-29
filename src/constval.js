@@ -98,21 +98,34 @@ export const DISPLAY_SCORE_POSITION_Y = 10;
 
 export const SCORE_TEXT_FONT_SIZE = 20; //スコアを表示するフォントサイズ(px)
 
-//テトリスを消した際に一度に消されたラインの本数
+//テトリミノを消した際に一度に消されたラインの本数
 export const LINE_SINGLE = 1;
 export const LINE_DOUBLE = 2;
 export const LINE_TRIPLE = 3;
 export const LINE_TETRIS = 4;
 
-//テトリスを消した際に消したラインの本数に応じて加算されるスコア
+//テトリミノを消した際に消したラインの本数に応じて加算されるスコア
 export const SCORE_SINGLE = 100;
 export const SCORE_DOUBLE = 300;
 export const SCORE_TRIPLE = 500;
 export const SCORE_TETRIS = 800;
 
+//テトリミノを消した際に出るメッセージの色
+export const MESSAGE_DOUBLE_COLOR = "#ffa500";
+export const MESSAGE_TRIPLE_COLOR = "#adff2f";
+export const MESSAGE_TETRIS_COLOR = "#ff00ff";
+
 export const TEXT_BLINK_INTERVAL = 1000; //テキストの点滅速度(ms)
 
 export const TETRIMINO_MOVED_COUNT_MAX = 15; //テトリミノが設置してから移動・回転できる最大数
 export const TETRIMINO_LOCK_DOWN_TIME = 500; //テトリミノが地面や他のテトリミノに設置された場合に固定されるまでの時間(ms)
+
+export const MESSAGE_FONT_SIZE = 30; //メッセージのフォントサイズ(px)
+//ユーザの操作によって表示される文字列の位置(px)
+export const INIT_MESSAGE_POSITION_X = 120;
+export const INIT_MESSAGE_POSITION_Y = 500;
+
+export const REACH_POINT_Y = 300; //メッセージが上昇するアニメーションにおいての到達地点(px)
+export const MESSAGE_DISPLAY_TIME = 2000; //メッセージが表示される時間(ms)
 
 export const DEBUG = true; //デバックモードの有効無効切替
