@@ -71,3 +71,8 @@ export function switchFormDisabled(formDisabledInfos) {
     }
   }
 }
+
+export function easeOutCubic(begin, end, x) {
+  const n = 1 - Math.pow(1 - x, 3);
+  return begin * (1 - n) + end * n;
+}

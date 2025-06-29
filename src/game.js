@@ -63,13 +63,21 @@ import {
   TETRIMINO_LOCK_DOWN_TIME,
   TETRIMINO_MOVED_COUNT_MAX,
   DEFAULT_LINE_COLOR,
+  INIT_MESSAGE_POSITION_X,
+  INIT_MESSAGE_POSITION_Y,
+  MESSAGE_DISPLAY_TIME,
+  REACH_POINT_Y,
+  MESSAGE_DOUBLE_COLOR,
+  MESSAGE_TRIPLE_COLOR,
+  MESSAGE_TETRIS_COLOR,
+  MESSAGE_FONT_SIZE,
 } from "./constval.js";
 import Animation from "./animation.js";
 import Field from "./field.js";
 import Tetrimino from "./tetrimino.js";
 import FieldBlock from "./fieldBlock.js";
 import DrawText from "./drawText.js";
-import { convertColAndRowPosition, shuffle } from "./util.js";
+import { convertColAndRowPosition, easeOutCubic, shuffle } from "./util.js";
 
 class Game {
   constructor(canvas) {
@@ -102,6 +110,12 @@ class Game {
       textAlign: "start",
       textBaseline: "top",
     });
+    this.messageText = new DrawText(MESSAGE_FONT_SIZE, USE_FONTS, {
+      fillStyle: "ff0000",
+      textAlign: "start",
+      textBaseline: "top",
+    });
+
     this.finishFunc = null;
     this.score = 0;
     this.deletedChain = 0;
@@ -109,6 +123,9 @@ class Game {
     this.installation = false;
     this.tetriminoMoved = false;
     this.tetriminoMovedCount = 0;
+    this.message = "";
+    this.messageDisplayStartTime = 0;
+    this.messageColor = "";
 
     //デバック用
     this.enabeldFallDown = true;
@@ -619,8 +636,8 @@ class Game {
         this.gameMsgText.draw(
           ctx,
           "GAME OVER",
-          FIELD_POSITION_X + ORIGIN_POSITION_X + (BLOCK_SIZE * FIELD_WIDTH) / 2,
-          FIELD_POSITION_Y + ORIGIN_POSITION_Y + (BLOCK_SIZE * FIELD_HEIGHT) / 2
+          FIELD_POSITION_X + (BLOCK_SIZE * FIELD_WIDTH) / 2 + ORIGIN_POSITION_X,
+          FIELD_POSITION_Y + (BLOCK_SIZE * FIELD_HEIGHT) / 2 + ORIGIN_POSITION_Y
         );
         break;
       case GAME_STATUS_PAUSE:
@@ -628,8 +645,8 @@ class Game {
         this.gameMsgText.draw(
           ctx,
           "PAUSE",
-          FIELD_POSITION_X + ORIGIN_POSITION_X + (BLOCK_SIZE * FIELD_WIDTH) / 2,
-          FIELD_POSITION_Y + ORIGIN_POSITION_Y + (BLOCK_SIZE * FIELD_HEIGHT) / 2
+          FIELD_POSITION_X + (BLOCK_SIZE * FIELD_WIDTH) / 2 + ORIGIN_POSITION_X,
+          FIELD_POSITION_Y + (BLOCK_SIZE * FIELD_HEIGHT) / 2 + ORIGIN_POSITION_Y
         );
         break;
     }
@@ -651,12 +668,16 @@ class Game {
     this.ctx.strokeStyle = DEFAULT_LINE_COLOR;
     this.drawNextTetrimino();
     this.drawHoldTetrimino();
-    this.scoreText.draw(
-      this.ctx,
-      `score: ${this.score}`,
-      DISPLAY_SCORE_POSITION_X + ORIGIN_POSITION_X,
-      DISPLAY_SCORE_POSITION_Y + ORIGIN_POSITION_Y
-    );
+    this.scoreText.draw(this.ctx, `score: ${this.score}`, DISPLAY_SCORE_POSITION_X, DISPLAY_SCORE_POSITION_Y);
+    if (this.message != "") {
+      const current = (Date.now() - this.messageDisplayStartTime) / MESSAGE_DISPLAY_TIME;
+      const posY = easeOutCubic(INIT_MESSAGE_POSITION_Y, REACH_POINT_Y, current);
+      this.ctx.globalAlpha = 1 - current;
+      this.messageText.setFillStyle(this.messageColor);
+      this.messageText.draw(this.ctx, this.message, INIT_MESSAGE_POSITION_X, posY);
+      this.ctx.globalAlpha = 1;
+      setTimeout(() => (this.message = ""), MESSAGE_DISPLAY_TIME);
+    }
   }
 
   drawNextTetrimino() {
@@ -747,6 +768,26 @@ class Game {
       this.field.deleteRow(canDeleteRows);
       this.deletedChain++;
       this.score += this.deletedRowsToScore(canDeleteRows.length) + this.deletedChain > 1 ? 50 * this.deletedChain : 0;
+      switch (canDeleteRows.length) {
+        case LINE_DOUBLE:
+          this.message = "double!";
+          this.messageDisplayStartTime = Date.now();
+          this.messageColor = MESSAGE_DOUBLE_COLOR;
+          break;
+        case LINE_TRIPLE:
+          this.message = "triple!";
+          this.messageDisplayStartTime = Date.now();
+          this.messageColor = MESSAGE_TRIPLE_COLOR;
+          break;
+        case LINE_TETRIS:
+          this.message = "tetris!";
+          this.messageDisplayStartTime = Date.now();
+          this.messageColor = MESSAGE_TETRIS_COLOR;
+          break;
+        default:
+          this.message = "";
+          break;
+      }
     } else {
       this.deletedChain = 0;
     }

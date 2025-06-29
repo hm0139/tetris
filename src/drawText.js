@@ -25,6 +25,14 @@ class DrawText {
       ctx.strokeText(text, x, y);
     }
   }
+
+  setFillStyle(color) {
+    this.fillStyle = color;
+  }
+
+  setStrokeStyle(color) {
+    this.strokeStyle = color;
+  }
 }
 
 export default DrawText;
