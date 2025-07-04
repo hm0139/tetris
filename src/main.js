@@ -1,7 +1,8 @@
-import { GAME_STATUS_PLAYING, GAME_STATUS_WAIT } from "./constval.js";
-import Modal from "./modal.js";
-import Game from "./game.js";
-import { switchFormDisabled } from "./util.js";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { GAME_STATUS_PLAYING, GAME_STATUS_WAIT } from "./constval";
+import ModalWindow from "./modalWindow";
+import Game from "./game";
+import { switchFormDisabled } from "./util";
 
 function main() {
   /** @type {HTMLCanvasElement} */
@@ -40,7 +41,7 @@ function main() {
     }
   });
 
-  const modal = new Modal("modal-box");
+  const modal = new ModalWindow("modal-box");
   modal.setHeaderText("確認");
   modal.setContentText("ゲームを中断しますか？");
   modal.addButtons([

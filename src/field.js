@@ -12,9 +12,9 @@ import {
   BLOCK_SIZE,
   ORIGIN_POSITION_Y,
   FIELD_BACK_GROUND_LINE_COLOR,
-} from "./constval.js";
-import FieldBlock from "./fieldBlock.js";
-import Tetrimino from "./tetrimino.js";
+} from "./constval";
+import FieldBlock from "./fieldBlock";
+import Tetrimino from "./tetrimino";
 
 class Field {
   /**

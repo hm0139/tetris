@@ -71,13 +71,13 @@ import {
   MESSAGE_TRIPLE_COLOR,
   MESSAGE_TETRIS_COLOR,
   MESSAGE_FONT_SIZE,
-} from "./constval.js";
-import Animation from "./animation.js";
-import Field from "./field.js";
-import Tetrimino from "./tetrimino.js";
-import FieldBlock from "./fieldBlock.js";
-import DrawText from "./drawText.js";
-import { convertColAndRowPosition, easeOutCubic, shuffle } from "./util.js";
+} from "./constval";
+import Animation from "./animation";
+import Field from "./field";
+import Tetrimino from "./tetrimino";
+import FieldBlock from "./fieldBlock";
+import DrawText from "./drawText";
+import { convertColAndRowPosition, easeOutCubic, shuffle } from "./util";
 
 /**
  * @typedef {Object} NextTetrimino

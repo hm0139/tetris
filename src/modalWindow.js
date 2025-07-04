@@ -1,10 +1,12 @@
+import { Modal } from "bootstrap";
+
 /**
  * @typedef {Object} Button 追加するボタン
  * @property {String} value ボタンに表示する文字列
  * @property {String} className ボタンのHTMLクラス
  * @property {Function} func ボタンを押下した際に呼び出されるコールバック関数
  */
-class Modal {
+class ModalWindow {
   /**
    * コンストラクタ
    * @param {String} modalId モーダルウィンドウのHTML要素のID
@@ -14,8 +16,8 @@ class Modal {
     this.modalId = modalId;
     /** @type {HTMLElement} */
     this.modal = document.getElementById(this.modalId);
-    /** @type {Object} */
-    this.modalBox = new bootstrap.Modal(this.modal);
+    /** @type {Modal} */
+    this.modalBox = new Modal(this.modal);
     /** @type {HTMLElement} */
     this.modalHeder = this.modal.querySelector(".modal-title");
     /** @type {HTMLElement} */
@@ -87,4 +89,4 @@ class Modal {
   }
 }
 
-export default Modal;
+export default ModalWindow;
