@@ -6,8 +6,8 @@ import {
   TETRIMINO_FIELD,
   TETRIMINO_ROTATE_LEFT,
   TETRIMINO_ROTATE_RIGHT,
-} from "./constval.js";
-import FieldBlock from "./fieldBlock.js";
+} from "./constval";
+import FieldBlock from "./fieldBlock";
 
 class Tetrimino {
   /**

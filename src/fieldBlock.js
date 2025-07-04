@@ -5,7 +5,7 @@ import {
   DEFAULT_LINE_COLOR,
   ORIGIN_POSITION_X,
   ORIGIN_POSITION_Y,
-} from "./constval.js";
+} from "./constval";
 
 class FieldBlock {
   /**
