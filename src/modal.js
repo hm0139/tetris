@@ -1,28 +1,61 @@
+/**
+ * @typedef {Object} Button 追加するボタン
+ * @property {String} value ボタンに表示する文字列
+ * @property {String} className ボタンのHTMLクラス
+ * @property {Function} func ボタンを押下した際に呼び出されるコールバック関数
+ */
 class Modal {
+  /**
+   * コンストラクタ
+   * @param {String} modalId モーダルウィンドウのHTML要素のID
+   */
   constructor(modalId) {
+    /** @type {String} */
     this.modalId = modalId;
+    /** @type {HTMLElement} */
     this.modal = document.getElementById(this.modalId);
+    /** @type {Object} */
     this.modalBox = new bootstrap.Modal(this.modal);
+    /** @type {HTMLElement} */
     this.modalHeder = this.modal.querySelector(".modal-title");
+    /** @type {HTMLElement} */
     this.modalContent = this.modal.querySelector(".modal-body");
   }
 
+  /**
+   * モーダルウィンドウの表示
+   */
   show() {
     this.modalBox.show();
   }
 
+  /**
+   * モーダルウィンドウの非表示
+   */
   hide() {
     this.modalBox.hide();
   }
 
+  /**
+   * モーダルウィンドウのヘッダ部分の文字列の設定
+   * @param {String} text 設定する文字列
+   */
   setHeaderText(text) {
     this.modalHeder.textContent = text;
   }
 
+  /**
+   * モーダルウィンドウの内容の設定
+   * @param {String} 設定する内容
+   */
   setContentText(text) {
     this.modalContent.innerHTML = text;
   }
 
+  /**
+   * モーダルウィンドウにボタンを追加
+   * @param {Button[]} buttons
+   */
   addButtons(buttons) {
     let modalFotter = this.modal.querySelector(".modal-footer");
     if (modalFotter == null) {
@@ -41,6 +74,9 @@ class Modal {
     }
   }
 
+  /**
+   * ボタンの削除
+   */
   removeButtons() {
     let modalFotter = this.modal.querySelector(".modal-footer");
     if (modalFotter == null) return;

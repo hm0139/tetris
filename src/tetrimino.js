@@ -7,16 +7,32 @@ import {
   TETRIMINO_ROTATE_LEFT,
   TETRIMINO_ROTATE_RIGHT,
 } from "./constval.js";
+import FieldBlock from "./fieldBlock.js";
 
 class Tetrimino {
+  /**
+   * コンストラクタ
+   * @param {Number} type ブロックタイプ
+   * @param {Number} col 行
+   * @param {Number} row 列
+   */
   constructor(type, col, row) {
+    /** @type {Number} */
     this.type = type;
+    /** @type {Number} */
     this.col = col;
+    /** @type {Number} */
     this.row = row;
+    /** @type {FieldBlock[][]} */
     this.blocks = Array.from({ length: TETRIMINO_FIELD }, () => Array(TETRIMINO_FIELD).fill(null));
+    /** @type {Number} */
     this.currentDirection = TETRIMINO_DIRECTION_UP;
   }
 
+  /**
+   * オブジェクトの複製
+   * @returns {Tetrimino} 複製されたオブジェクト
+   */
   clone() {
     const clone = new Tetrimino(this.type, this.col, this.row);
     clone.setTetrimino({ type: this.type, blocks: this.blocks });
@@ -24,21 +40,38 @@ class Tetrimino {
     return clone;
   }
 
+  /**
+   * @param {Tetrimino} tetrimino
+   */
   setTetrimino(tetrimino) {
     this.type = tetrimino.type;
     this.blocks = tetrimino.blocks.map((row) => row.map((value) => value.clone()));
   }
 
+  /**
+   * テトリミノの位置を設定
+   * @param {Number} col 行
+   * @param {Number} row 列
+   */
   setPosition(col, row) {
     this.col = col;
     this.row = row;
   }
 
+  /**
+   * テトリミノの移動
+   * @param {Number} moveCol 列の相対位置
+   * @param {Number} moveRow 行の相対位置
+   */
   move(moveCol, moveRow) {
     this.col += moveCol;
     this.row += moveRow;
   }
 
+  /**
+   * テトリミノの回転
+   * @param {Number} dir 回転する方向
+   */
   rotate(dir) {
     let temp = Array.from({ length: TETRIMINO_FIELD }, () => Array(TETRIMINO_FIELD).fill(null));
     for (let i = 0; i < TETRIMINO_FIELD; i++) {
@@ -73,10 +106,20 @@ class Tetrimino {
     this.blocks = temp.map((row) => row.map((value) => value.clone()));
   }
 
+  /**
+   * テトリミノを落下させる
+   */
   fallDown() {
     this.row++;
   }
 
+  /**
+   * テトリミノの描画
+   * @param {CanvasRenderingContext2D} ctx 描画コンテキスト
+   * @param {Number} offsetX 原点からのX方向の距離
+   * @param {Number} offsetY 原点からのY方向の距離
+   * @param {Number} [scale=1] 拡大倍率
+   */
   draw(ctx, offsetX, offsetY, scale = 1) {
     for (let i = 0; i < TETRIMINO_FIELD; i++) {
       for (let j = 0; j < TETRIMINO_FIELD; j++) {

@@ -79,60 +79,102 @@ import FieldBlock from "./fieldBlock.js";
 import DrawText from "./drawText.js";
 import { convertColAndRowPosition, easeOutCubic, shuffle } from "./util.js";
 
+/**
+ * @typedef {Object} NextTetrimino
+ * @property {Number} type
+ * @property {FieldBlock[][]} blocks
+ */
 class Game {
+  /**
+   *
+   * @param {HTMLCanvasElement} canvas
+   */
   constructor(canvas) {
+    /** @type {HTMLCanvasElement} */
     this.canvas = canvas;
+    /** @type {CanvasRenderingContext2D} */
     this.ctx = this.canvas.getContext("2d");
+    /** @type {Animation} */
     this.animation = new Animation(this.update.bind(this), { prevAnimationTime: 0, displayText: true });
+    /** @type {Field} */
     this.field = new Field();
+    /** @type {Tetrimino} */
     this.tetrimino = new Tetrimino(BLOCK_TYPE_NONE, 0, 0);
+    /** @type {Tetrimino} */
     this.shadowMino = null;
+    /** @type {NextTetrimino[]} */
     this.nextTetrimino = [];
+    /** @type {Tetrimino} */
     this.holdTetrimino = null;
+    /** @type {Boolean} */
     this.canHold = true;
+    /** @type {Number} */
     this.gameStatus = GAME_STATUS_WAIT;
+    /** @type {Number} */
     this.centerX = 0;
+    /** @type {Number} */
     this.centerY = 0;
+    /** @type {DrawText} */
     this.gameStartText = new DrawText(DEFAULT_FONT_SIZE, USE_FONTS, {
       fillStyle: "#00ffff",
       strokeStyle: "#ffff00",
       textAlign: "center",
       textBaseline: "middle",
     });
+    /** @type {DrawText} */
     this.gameMsgText = new DrawText(DEFAULT_FONT_SIZE, USE_FONTS, {
       fillStyle: "#ff0000",
       strokeStyle: "#ffff00",
       textAlign: "center",
       textBaseline: "middle",
     });
+    /** @type {DrawText} */
     this.scoreText = new DrawText(SCORE_TEXT_FONT_SIZE, USE_FONTS, {
       fillStyle: "#000000",
       textAlign: "start",
       textBaseline: "top",
     });
+    /** @type {DrawText} */
     this.messageText = new DrawText(MESSAGE_FONT_SIZE, USE_FONTS, {
       fillStyle: "ff0000",
       textAlign: "start",
       textBaseline: "top",
     });
 
+    /** @callback GameFinish */
+    /** @type {GameFinish} */
     this.finishFunc = null;
+    /** @type {Number} */
     this.score = 0;
+    /** @type {Number} */
     this.deletedChain = 0;
+    /** @type {Number} */
     this.tetriminoInstallationTime = -1;
+    /** @type {Boolean} */
     this.installation = false;
+    /** @type {Boolean} */
     this.tetriminoMoved = false;
+    /** @type {Number} */
     this.tetriminoMovedCount = 0;
+    /** @type {String} */
     this.message = "";
+    /** @type {Number} */
     this.messageDisplayStartTime = 0;
+    /** @type {String} */
     this.messageColor = "";
 
     //デバック用
+    /** @type {Boolean} */
     this.enabeldFallDown = true;
+    /** @type {Boolean} */
     this.click = false;
+    /** @type {Boolean} */
     this.rightClick = false;
   }
 
+  /**
+   * 初期化
+   */
   init() {
     window.addEventListener("resize", this.resize.bind(this));
     window.addEventListener("keydown", this.keyControll.bind(this));
@@ -152,6 +194,9 @@ class Game {
     this.animation.start();
   }
 
+  /**
+   * ゲームを開始
+   */
   start() {
     this.field.init();
     this.nextTetrimino = [];
@@ -161,14 +206,23 @@ class Game {
     this.gameStatus = GAME_STATUS_PLAYING;
   }
 
+  /**
+   * 一時停止
+   */
   pause() {
     this.gameStatus = GAME_STATUS_PAUSE;
   }
 
+  /**
+   * 再開
+   */
   resume() {
     this.gameStatus = GAME_STATUS_PLAYING;
   }
 
+  /**
+   * テトリミノの初期化
+   */
   initTetrimino() {
     if (this.nextTetrimino.length < GENERATED_TETRIMINO_LOWER_LIMIT) {
       const tetriminos = shuffle([...TETRIMINOS]);
@@ -184,11 +238,17 @@ class Game {
     this.shadowMino = this.tetrimino.clone();
   }
 
+  /**
+   * テトリミノの位置を初期化
+   */
   initTetriminoPosition() {
     const initCol = Math.floor(FIELD_WIDTH / 2) - TETRIMINO_FIELD / 2;
     this.tetrimino.setPosition(initCol, 0);
   }
 
+  /**
+   * キャンバスサイズが変更された際の処理
+   */
   resize() {
     this.canvas.width = this.canvas.clientWidth;
     this.canvas.height = this.canvas.clientHeight;
@@ -196,6 +256,11 @@ class Game {
     this.centerY = this.canvas.height / 2;
   }
 
+  /**
+   * キーボードが押下された際の処理
+   * @param {KeyboardEvent} e キーボードイベント
+   * @returns
+   */
   keyControll(e) {
     if (this.gameStatus != GAME_STATUS_PLAYING) return;
 
@@ -281,6 +346,10 @@ class Game {
     }
   }
 
+  /**
+   * デバック用のキーボード処理
+   * @param {KeyboardEvent} e キーボードイベント
+   */
   debugKeyControll(e) {
     switch (e.key) {
       case "q":
@@ -294,7 +363,10 @@ class Game {
     }
   }
 
-  //デバック用
+  /**
+   * 任意のテトリミノを出現させる
+   * @param {KeyboardEvent} e キーボードイベント
+   */
   selectBlock(e) {
     e.preventDefault();
 
@@ -333,6 +405,11 @@ class Game {
     this.shadowMinoGroundSearch();
   }
 
+  /**
+   * キャンバスにマウスのボタンが押下された際の処理
+   * @param {MouseEvent} e マウスイベント
+   * @returns
+   */
   canvasMouseDown(e) {
     const { col, row } = convertColAndRowPosition(
       this.canvas,
@@ -357,11 +434,18 @@ class Game {
     }
   }
 
+  /**
+   * マウスのボタンが話された際の処理
+   */
   canvasMouseUp() {
     this.click = false;
     this.rightClick = false;
   }
 
+  /**
+   * フィールド内に任意のブロックを作成
+   * @param {MouseEvent} e マウスイベント
+   */
   makeBlock(e) {
     const { col, row } = convertColAndRowPosition(
       this.canvas,
@@ -375,6 +459,10 @@ class Game {
     this.field.setBlock(col, row + SPACE_ROwS, debugBlock);
   }
 
+  /**
+   * フィールド内の任意のブロックを消去
+   * @param {MouseEvent} e マウスイベント
+   */
   removeBlock(e) {
     const { col, row } = convertColAndRowPosition(
       this.canvas,
@@ -389,6 +477,11 @@ class Game {
     e.preventDefault();
   }
 
+  /**
+   * テトリミノがスムーズに回転できる様にする
+   * @param {Number} rotateDirection どちらに回すか
+   * @returns {Boolean} 回転できたかどうか
+   */
   superRotationSystem(rotateDirection) {
     if (this.tetrimino.type == BLOCK_TYPE_TETRIMINO_O) {
       //Oミノは回転しても意味がないのでなにもしない
@@ -557,6 +650,10 @@ class Game {
     }
   }
 
+  /**
+   * 更新処理
+   * @param {import("./animation.js").AnimInfo} animInfo アニメーション情報
+   */
   update(animInfo) {
     const { getExtraData, setExtraData, currentAnimationTime } = animInfo;
     const { prevAnimationTime, displayText } = getExtraData();
@@ -660,6 +757,9 @@ class Game {
     }
   }
 
+  /**
+   * ゲームの内容を描画
+   */
   drawGameContent() {
     this.ctx.strokeStyle = "#000000";
     this.field.draw(this.ctx);
@@ -680,6 +780,9 @@ class Game {
     }
   }
 
+  /**
+   * NEXTミノを描画
+   */
   drawNextTetrimino() {
     const displayBoxSize = BLOCK_SIZE * NEXT_TETRIMINO_DISPLAY_BOX_SCALE * TETRIMINO_FIELD;
     const nextTetriminoSize = BLOCK_SIZE * NEXT_TETRIMINO_SCALE * TETRIMINO_FIELD;
@@ -709,6 +812,9 @@ class Game {
     }
   }
 
+  /**
+   * ホールドミノを描画
+   */
   drawHoldTetrimino() {
     const displayBoxSize = BLOCK_SIZE * HOLD_TETRIMINO_DISPLAY_BOX_SCALE * TETRIMINO_FIELD;
     const holdTetriminoSize = BLOCK_SIZE * HOLD_TETRIMINO_SCALE * TETRIMINO_FIELD;
@@ -732,12 +838,18 @@ class Game {
     );
   }
 
+  /**
+   * シャドウミノを描画
+   */
   drawShadowMino() {
     this.ctx.globalAlpha = SHADOW_ALPHA;
     this.shadowMino.draw(this.ctx, FIELD_POSITION_X, FIELD_POSITION_Y);
     this.ctx.globalAlpha = 1.0;
   }
 
+  /**
+   * シャドウミノが設置する地点を探索
+   */
   shadowMinoGroundSearch() {
     this.shadowMino.row = this.tetrimino.row;
     while (!this.field.isHit(this.shadowMino, 0, 1)) {
@@ -745,6 +857,9 @@ class Game {
     }
   }
 
+  /**
+   * ホールドミノをセット
+   */
   setHoldTetrimino() {
     if (this.holdTetrimino == null) {
       this.holdTetrimino = this.tetrimino.clone();
@@ -761,6 +876,9 @@ class Game {
     this.shadowMinoGroundSearch();
   }
 
+  /**
+   * テトリミノの設置後の処理
+   */
   groundBlock() {
     this.field.mergeTetrimino(this.tetrimino);
     const canDeleteRows = this.field.checkCanDeleteRow();
@@ -796,6 +914,11 @@ class Game {
     this.canHold = true;
   }
 
+  /**
+   * テトリミノを生成
+   * @param {Number} blockType 生成するテトリミノの種類
+   * @returns {NextTetrimino}
+   */
   generateTetrimino(blockType) {
     const type = blockType;
     const map = this.getTrtriminoMap(type);
@@ -807,6 +930,11 @@ class Game {
     return { type: type, blocks: tetrimino };
   }
 
+  /**
+   * 消したラインの数に応じたスコアの取得
+   * @param {Number} rowCount 消したラインの本数
+   * @returns {number} スコア
+   */
   deletedRowsToScore(rowCount) {
     switch (rowCount) {
       case LINE_SINGLE:
@@ -822,6 +950,11 @@ class Game {
     }
   }
 
+  /**
+   * テトリミノの形状の取得
+   * @param {Number} type テトリミノの種類
+   * @returns {String[]} テトリミノの形状を表す文字列
+   */
   getTrtriminoMap(type) {
     let map = Array(TETRIMINO_FIELD);
 
@@ -873,6 +1006,11 @@ class Game {
     return map;
   }
 
+  /**
+   * 対応するテトリミノの色コードを取得
+   * @param {Number} type テトリミノの種類
+   * @returns {number} テトリミノの色コード
+   */
   getTetriminoColor(type) {
     switch (type) {
       case BLOCK_TYPE_TETRIMINO_I:

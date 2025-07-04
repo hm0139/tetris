@@ -4,6 +4,7 @@ import Game from "./game.js";
 import { switchFormDisabled } from "./util.js";
 
 function main() {
+  /** @type {HTMLCanvasElement} */
   const canvas = document.getElementById("main");
   const game = new Game(canvas);
   const gameStartBtn = document.getElementById("game-start-btn");
